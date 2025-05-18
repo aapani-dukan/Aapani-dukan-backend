@@ -20,5 +20,6 @@
   "homepage": "https://github.com/aapani-dukan/Aapani-dukan-backend#readme",
   "dependencies": {
     "express": "^5.1.0"
+    "node-fetch": "^2.6.7"
   }
 }
