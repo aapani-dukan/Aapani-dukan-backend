@@ -1,0 +1,23 @@
+{
+  "name": "aapani-dukan-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aapani-dukan/Aapani-dukan-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aapani-dukan/Aapani-dukan-backend/issues"
+  },
+  "homepage": "https://github.com/aapani-dukan/Aapani-dukan-backend#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
