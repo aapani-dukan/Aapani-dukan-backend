@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
 const PRODUCTS_PATH = './data/products.json';
 const PENDING_SELLERS_PATH = './data/pending-sellers.json';
 
@@ -55,3 +56,23 @@ app.post('/api/register-seller', (req, res) => {
   if (!name || !shopName || !mobile || !otp) {
     return res.status(400).json({ message: 'सभी फ़ील्ड भरें।' });
   }
+
+  if (otpStore[mobile] !== otp) {
+    return res.status(400).json({ message: 'OTP गलत है।' });
+  }
+
+  const newSeller = { name, shopName, mobile, status: 'pending' };
+
+  let pendingSellers = [];
+  if (fs.existsSync(PENDING_SELLERS_PATH)) {
+    const data = fs.readFileSync(PENDING_SELLERS_PATH);
+    pendingSellers = JSON.parse(data);
+  }
+
+  pendingSellers.push(newSeller);
+  fs.writeFileSync(PENDING_SELLERS_PATH, JSON.stringify(pendingSellers, null, 2));
+
+  delete otpStore[mobile];
+
+  res.json({ message: 'Seller पंजीकरण सफल! Approval pending है।' });
+});
