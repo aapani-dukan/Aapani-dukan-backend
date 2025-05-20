@@ -122,3 +122,13 @@ app.post('/api/upload-product', upload.single('image'), (req, res) => {
 
   res.json({ message: 'Product upload सफल रहा!', product: newProduct });
 });
+// सभी products दिखाने के लिए
+app.get('/api/products', (req, res) => {
+  if (fs.existsSync(PRODUCTS_PATH)) {
+    const data = fs.readFileSync(PRODUCTS_PATH);
+    const products = JSON.parse(data);
+    res.json(products);
+  } else {
+    res.json([]);
+  }
+});
