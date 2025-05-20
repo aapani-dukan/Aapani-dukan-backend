@@ -35,6 +35,9 @@ const approveSeller = (mobile) => {
   const seller = pendingSellers[sellerIndex];
   console.log("Seller data to approve:", seller);
 
+  // Optional: Set approvedAt timestamp
+  seller.approvedAt = new Date().toISOString();
+
   // Move seller from pending to approved
   approvedSellers.push(seller);
   pendingSellers.splice(sellerIndex, 1);
