@@ -1,7 +1,14 @@
 // firebase-admin.js
-const admin = require('firebase-admin');
-const serviceAccount = require('./firebase-service-account.json'); // इसे Firebase से डाउनलोड करें
 
+const admin = require("firebase-admin");
+
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+module.exports = admin;
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
