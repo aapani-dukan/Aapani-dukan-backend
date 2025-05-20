@@ -15,7 +15,11 @@ const PRODUCTS_PATH = './data/products.json';
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+const authMiddleware = require('./authMiddleware');
 
+app.post('/api/approve-seller', authMiddleware, (req, res) => {
+  // only admin can access
+});
 // Uploads setup
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
