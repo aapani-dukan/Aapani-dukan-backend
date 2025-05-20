@@ -1,7 +1,7 @@
 {
   "name": "aapani-dukan-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Backend for Aapani Dukan platform",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -19,12 +19,11 @@
   },
   "homepage": "https://github.com/aapani-dukan/Aapani-dukan-backend#readme",
   "dependencies": {
-  "express": "^4.18.2",
-  "node-fetch": "^2.6.7",
-  "path": "^0.12.7",
-  "fs": "0.0.1-security",
-  "body-parser": "^1.20.2",
-  "multer": "^1.4.5-lts.1",
-  "dotenv": "^16.3.1"
+    "express": "^4.18.2",
+    "node-fetch": "^2.6.7",
+    "body-parser": "^1.20.2",
+    "multer": "^1.4.5-lts.1",
+    "dotenv": "^16.3.1",
+    "firebase-admin": "^11.10.1"
   }
 }
