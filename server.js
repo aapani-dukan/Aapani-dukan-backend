@@ -5,6 +5,8 @@ const fs = require('fs');
 const bodyParser = require('body-parser');
 require("dotenv").config();
 const multer = require('multer');
+const dotenv = require('dotenv');
+dotenv.config();
 
 // Firebase Admin
 const admin = require("./firebase-admin");
