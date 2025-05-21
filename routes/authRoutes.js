@@ -1,19 +1,32 @@
-const express = require("express");
-const router = express.Router();
-const admin = require("../firebase-admin");
+// routes/authRoutes.js
 
-router.post("/verify-token", async (req, res) => {
-  const idToken = req.body.token;
+const express = require('express');
+const router = express.Router();
+const admin = require('../firebase-admin');
+const { verifyToken } = require('../authMiddleware');
+
+// User login route (client se idToken aayega)
+router.post('/login', async (req, res) => {
+  const { idToken } = req.body;
+
+  if (!idToken) {
+    return res.status(400).json({ error: 'ID Token is required' });
+  }
 
   try {
     const decodedToken = await admin.auth().verifyIdToken(idToken);
     const uid = decodedToken.uid;
 
-    // आप यहाँ पर यूज़र को डेटाबेस में सेव कर सकते हैं
-    res.status(200).json({ message: "Token verified", uid, email: decodedToken.email });
+    res.status(200).json({ message: 'Login successful', uid });
   } catch (error) {
-    res.status(401).json({ message: "Invalid or expired token", error: error.message });
+    console.error('Login Error:', error);
+    res.status(401).json({ error: 'Invalid ID Token' });
   }
+});
+
+// Protected route example (only accessible after login)
+router.get('/profile', verifyToken, (req, res) => {
+  res.json({ message: 'Welcome to your profile', uid: req.user.uid });
 });
 
 module.exports = router;
