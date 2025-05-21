@@ -1,12 +1,10 @@
-const admin = require("firebase-admin");
-require('dotenv').config();
+const admin = require('firebase-admin');
+
+// .env से JSON स्ट्रिंग लेकर उसे JSON ऑब्जेक्ट में बदलना
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
 admin.initializeApp({
-  credential: admin.credential.cert({
-    projectId: process.env.FIREBASE_PROJECT_ID,
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-  }),
+  credential: admin.credential.cert(serviceAccount)
 });
 
 module.exports = admin;
