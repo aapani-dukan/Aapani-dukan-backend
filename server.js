@@ -31,6 +31,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Uploads setup
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, 'uploads/'),
   filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
@@ -42,7 +43,7 @@ app.get("/", (req, res) => {
   res.send("Server is live and working!");
 });
 
-// Register Seller (no OTP)
+// Register Seller
 app.post('/api/register-seller', (req, res) => {
   const { name, shopName, mobile } = req.body;
 
@@ -81,7 +82,7 @@ app.post('/api/approve-seller', (req, res) => {
   }
 });
 
-// Upload Product (approved sellers only)
+// Upload Product
 app.post('/api/upload-product', upload.single('image'), (req, res) => {
   const { sellerMobile, productName, price, description } = req.body;
   const image = req.file ? `/uploads/${req.file.filename}` : null;
