@@ -1,52 +1,41 @@
 const express = require('express');
-const router = express.Router();
-const admin = require("./firebase-admin");
+const app = express();
 const path = require('path');
 const fs = require('fs');
 const bodyParser = require('body-parser');
 require("dotenv").config();
 const multer = require('multer');
+
+// Firebase Admin
+const admin = require("./firebase-admin");
+
+// Routes
+const authRoutes = require("./authRoutes");
 const approveSeller = require('./approveSellers');
 
-const app = express();
+// Constants
 const PORT = process.env.PORT || 3000;
-
 const PENDING_SELLERS_PATH = './data/pending-sellers.json';
 const SELLERS_PATH = './data/sellers.json';
 const PRODUCTS_PATH = './data/products.json';
-router.post("/verify-token", async (req, res) => {
-  const idToken = req.body.token;
-    try{
-  const decodedToken = await admin.auth().verifyIdToken(idToken);
-    const uid = decodedToken.uid;
-      res.status(200).json({ uid, message: "User verified" });
-  } catch (error) {
-    res.status(401).json({ error: "Invalid token" });
-  }
-});
-module.exports = router;
-app.use("/api", authRoutes);
+
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-const authMiddleware = require('./authMiddleware');
-app.listen(3000, () => console.log("Server running on port 3000"));
-app.post('/api/approve-seller', authMiddleware, (req, res) => {
-  // only admin can access
-});
+app.use("/api", authRoutes);
+
+// Static file serving
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Uploads setup
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
-app.use('/uploads', express.static(uploadDir));
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, 'uploads/'),
   filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
 });
 const upload = multer({ storage });
-
-// Static files
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(__dirname));
 
 // Health check
 app.get("/", (req, res) => {
@@ -80,7 +69,7 @@ app.post('/api/register-seller', (req, res) => {
   res.json({ message: 'Seller पंजीकरण सफल! Approval pending है।' });
 });
 
-// Approve seller (admin use only)
+// Approve Seller
 app.post('/api/approve-seller', (req, res) => {
   const { mobile } = req.body;
 
@@ -92,12 +81,7 @@ app.post('/api/approve-seller', (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
-// ... (existing code ऊपर वाला same रहेगा)
-
-// Upload Product (only for approved sellers)
+// Upload Product (approved sellers only)
 app.post('/api/upload-product', upload.single('image'), (req, res) => {
   const { sellerMobile, productName, price, description } = req.body;
   const image = req.file ? `/uploads/${req.file.filename}` : null;
@@ -106,7 +90,6 @@ app.post('/api/upload-product', upload.single('image'), (req, res) => {
     return res.status(400).json({ message: 'सभी आवश्यक फ़ील्ड भरें।' });
   }
 
-  // Check if seller is approved
   let approvedSellers = [];
   if (fs.existsSync(SELLERS_PATH)) {
     const data = fs.readFileSync(SELLERS_PATH);
@@ -118,14 +101,12 @@ app.post('/api/upload-product', upload.single('image'), (req, res) => {
     return res.status(403).json({ message: 'Seller approved नहीं है।' });
   }
 
-  // Load current products
   let products = [];
   if (fs.existsSync(PRODUCTS_PATH)) {
     const data = fs.readFileSync(PRODUCTS_PATH);
     products = JSON.parse(data);
   }
 
-  // Add new product
   const newProduct = {
     sellerMobile,
     productName,
@@ -140,7 +121,8 @@ app.post('/api/upload-product', upload.single('image'), (req, res) => {
 
   res.json({ message: 'Product upload सफल रहा!', product: newProduct });
 });
-// सभी products दिखाने के लिए
+
+// Show all products
 app.get('/api/products', (req, res) => {
   if (fs.existsSync(PRODUCTS_PATH)) {
     const data = fs.readFileSync(PRODUCTS_PATH);
@@ -149,4 +131,9 @@ app.get('/api/products', (req, res) => {
   } else {
     res.json([]);
   }
+});
+
+// Start Server
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
