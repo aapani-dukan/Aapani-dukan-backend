@@ -10,11 +10,11 @@ const multer = require('multer');
 const admin = require("./firebase-admin");
 
 // Routes
-const authRoutes = require("./authRoutes");
+const authRoutes = require("./routes/authRoutes");
 const approveSeller = require('./approveSellers');
 
 // Constants
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 const PENDING_SELLERS_PATH = './data/pending-sellers.json';
 const SELLERS_PATH = './data/sellers.json';
 const PRODUCTS_PATH = './data/products.json';
@@ -22,7 +22,7 @@ const PRODUCTS_PATH = './data/products.json';
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use("/api", authRoutes);
+app.use('/api/auth', authRoutes);
 
 // Static file serving
 app.use(express.static(path.join(__dirname, 'public')));
