@@ -1,12 +1,11 @@
 const express = require('express');
-const app = express();
 const path = require('path');
 const fs = require('fs');
 const bodyParser = require('body-parser');
-require("dotenv").config();
 const multer = require('multer');
-const dotenv = require('dotenv');
-dotenv.config();
+require("dotenv").config();
+
+const app = express();
 
 // Firebase Admin
 const admin = require("./firebase-admin");
@@ -24,6 +23,8 @@ const PRODUCTS_PATH = './data/products.json';
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+// Routes
 app.use('/api/auth', authRoutes);
 
 // Static file serving
@@ -45,7 +46,7 @@ app.get("/", (req, res) => {
   res.send("Server is live and working!");
 });
 
-// Register Seller
+// ============ Seller Registration ============
 app.post('/api/register-seller', (req, res) => {
   const { name, shopName, mobile } = req.body;
 
@@ -72,7 +73,7 @@ app.post('/api/register-seller', (req, res) => {
   res.json({ message: 'Seller पंजीकरण सफल! Approval pending है।' });
 });
 
-// Approve Seller
+// ============ Approve Seller ============
 app.post('/api/approve-seller', (req, res) => {
   const { mobile } = req.body;
 
@@ -84,7 +85,7 @@ app.post('/api/approve-seller', (req, res) => {
   }
 });
 
-// Upload Product
+// ============ Upload Product ============
 app.post('/api/upload-product', upload.single('image'), (req, res) => {
   const { sellerMobile, productName, price, description } = req.body;
   const image = req.file ? `/uploads/${req.file.filename}` : null;
@@ -125,7 +126,7 @@ app.post('/api/upload-product', upload.single('image'), (req, res) => {
   res.json({ message: 'Product upload सफल रहा!', product: newProduct });
 });
 
-// Show all products
+// ============ Show All Products ============
 app.get('/api/products', (req, res) => {
   if (fs.existsSync(PRODUCTS_PATH)) {
     const data = fs.readFileSync(PRODUCTS_PATH);
