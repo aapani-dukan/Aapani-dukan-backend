@@ -1,18 +1,17 @@
-const express = require('express');
-const path = require('path');
-const fs = require('fs');
-const bodyParser = require('body-parser');
-const multer = require('multer');
 require("dotenv").config();
+const express = require("express");
+const path = require("path");
+const fs = require("fs");
+const bodyParser = require("body-parser");
+const multer = require("multer");
+const passport = require("passport");
+require("./config/passport-setup");
 
-const app = express();
-
-// Firebase Admin
-const admin = require("./firebase-admin");
-
-// Routes
 const authRoutes = require("./routes/authRoutes");
 const approveSeller = require('./approveSellers');
+const admin = require("./firebase-admin");
+
+const app = express();
 
 // Constants
 const PORT = process.env.PORT || 5000;
@@ -23,15 +22,17 @@ const PRODUCTS_PATH = './data/products.json';
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(passport.initialize());
 
 // Routes
+app.use("/auth", authRoutes);
 app.use('/api/auth', authRoutes);
 
 // Static file serving
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Uploads setup
+// Upload setup
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 
@@ -43,7 +44,7 @@ const upload = multer({ storage });
 
 // Health check
 app.get("/", (req, res) => {
-  res.send("Server is live and working!");
+  res.send("Server is live and working with Google Auth!");
 });
 
 // ============ Seller Registration ============
