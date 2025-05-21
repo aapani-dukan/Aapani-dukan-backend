@@ -1,7 +1,10 @@
 const express = require('express');
+const router = express.Router();
+const admin = require("./firebase-admin");
 const path = require('path');
 const fs = require('fs');
 const bodyParser = require('body-parser');
+require("dotenv").config();
 const multer = require('multer');
 const approveSeller = require('./approveSellers');
 
@@ -11,12 +14,23 @@ const PORT = process.env.PORT || 3000;
 const PENDING_SELLERS_PATH = './data/pending-sellers.json';
 const SELLERS_PATH = './data/sellers.json';
 const PRODUCTS_PATH = './data/products.json';
-
+router.post("/verify-token", async (req, res) => {
+  const idToken = req.body.token;
+    try{
+  const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const uid = decodedToken.uid;
+      res.status(200).json({ uid, message: "User verified" });
+  } catch (error) {
+    res.status(401).json({ error: "Invalid token" });
+  }
+});
+module.exports = router;
+app.use("/api", authRoutes);
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 const authMiddleware = require('./authMiddleware');
-
+app.listen(3000, () => console.log("Server running on port 3000"));
 app.post('/api/approve-seller', authMiddleware, (req, res) => {
   // only admin can access
 });
