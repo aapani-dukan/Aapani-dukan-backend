@@ -9,7 +9,7 @@ require("./config/passport-setup");
 
 const authRoutes = require("./routes/authRoutes");
 const approveSeller = require('./approveSellers');
-const admin = require("./firebase-admin");
+
 
 const app = express();
 
