@@ -1,19 +1,16 @@
 const express = require('express');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
-const router = express.Router();
-const { googleLogin } = require('../controllers/authController');
 
-// Optional POST route
-router.post('/google-login', googleLogin);
+const router = express.Router();
 
 // STEP 1: Redirect to Google
-router.get('/google', passport.authenticate('google', {
+router.get('/auth/google', passport.authenticate('google', {
   scope: ['profile', 'email'],
 }));
 
-// STEP 2: Callback from Google
-router.get('/google/callback',
+// STEP 2: Google redirects to this after login (MUST MATCH Google Console)
+router.get('/auth/callback',
   passport.authenticate('google', { session: false }),
   (req, res) => {
     const user = req.user;
@@ -24,8 +21,8 @@ router.get('/google/callback',
       role: user.role || 'customer',
     }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
-    // ✅ Redirect to Frontend (not backend) with token
-    const redirectUrl = `https://aapani-dukan.vercel.app/CustomerDashboard?token=${token}`;
+    // Redirect to frontend with token
+    const redirectUrl = `https://your-frontend-url.vercel.app/CustomerDashboard?token=${token}`;
     res.redirect(redirectUrl);
   }
 );
