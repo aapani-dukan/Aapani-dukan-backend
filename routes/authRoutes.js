@@ -25,7 +25,7 @@ router.get('/google/callback',
     }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
     // Redirect to frontend with token
-    const redirectUrl = `https://aapani-dukan-frontend.vercel.app/auth/callback?token=${token}`;
+    const redirectUrl = `https://aapani-dukan-backend-11.onrender.com/auth/callback?token=${token}`;
     res.redirect(redirectUrl);
   }
 );
