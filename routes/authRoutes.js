@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 const { googleLogin } = require('../controllers/authController');
 
-// Existing POST route
+// Optional POST route
 router.post('/google-login', googleLogin);
 
 // STEP 1: Redirect to Google
@@ -24,8 +24,8 @@ router.get('/google/callback',
       role: user.role || 'customer',
     }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
-    // Redirect to frontend with token
-    const redirectUrl = `https://aapani-dukan-backend-11.onrender.com/auth/callback?token=${token}`;
+    // ✅ Redirect to Frontend (not backend) with token
+    const redirectUrl = `https://aapani-dukan.vercel.app/CustomerDashboard?token=${token}`;
     res.redirect(redirectUrl);
   }
 );
