@@ -1,29 +1,26 @@
-const express = require('express');
-const passport = require('passport');
-const jwt = require('jsonwebtoken');
-
+require("dotenv").config();
+const express = require("express");
 const router = express.Router();
 
-// STEP 1: Redirect to Google
-router.get('/google', passport.authenticate('google', {
-  scope: ['profile', 'email'],
-}));
+router.get("/auth/callback", (req, res) => {
+  const jwtToken = req.query.token;
 
-// STEP 2: Callback
-router.get('/google/callback',
-  passport.authenticate('google', { session: false }),
-  (req, res) => {
-    const user = req.user;
-
-    const token = jwt.sign({
-      uid: user.id,
-      email: user.email,
-      role: user.role || 'customer',
-    }, process.env.JWT_SECRET, { expiresIn: '7d' });
-
-    const redirectUrl = `https://aapani-dukan-frontend-4444.vercel.app/customer-dashboard?token=${jwtToken}`;
-    res.redirect(redirectUrl);
+  if (!jwtToken) {
+    return res.status(400).send("Token missing");
   }
-);
+
+  const origin = req.get("origin") || "";
+
+  // Decide frontend URL based on origin header
+  let redirectBaseUrl;
+  if (origin.includes("netlify")) {
+    redirectBaseUrl = process.env.FRONTEND_URL_NETLIFY;
+  } else {
+    redirectBaseUrl = process.env.FRONTEND_URL_VERCEL;
+  }
+
+  const redirectUrl = `${redirectBaseUrl}/customer-dashboard?token=${jwtToken}`;
+  res.redirect(redirectUrl);
+});
 
 module.exports = router;
