@@ -7,9 +7,8 @@ const multer = require("multer");
 const passport = require("passport");
 require("./config/passport-setup");
 
-const authRoutes = require("./routes/authRoutes");
+const authRoutes = require("./routes/authRoutes");  // इसमें /auth/google का route होगा
 const approveSeller = require('./approveSellers');
-
 
 const app = express();
 
@@ -24,9 +23,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(passport.initialize());
 
-// Routes
+// Auth Routes (Google login सहित)
 app.use("/auth", authRoutes);
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRoutes);  // अगर दो जगह से access देना है तो ठीक है
 
 // Static file serving
 app.use(express.static(path.join(__dirname, 'public')));
