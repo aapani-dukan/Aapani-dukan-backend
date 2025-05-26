@@ -10,7 +10,7 @@ router.get('/auth/google', passport.authenticate('google', {
 }));
 
 // STEP 2: Google redirects to this after login (MUST MATCH Google Console)
-router.get('/auth/callback',
+router.get('/auth/google/callback',
   passport.authenticate('google', { session: false }),
   (req, res) => {
     const user = req.user;
@@ -22,7 +22,7 @@ router.get('/auth/callback',
     }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
     // Redirect to frontend with token
-    const redirectUrl = `https://https://aapani-dukan-frontend-4444.vercel.app/CustomerDashboard?token=${token}`;
+    const redirectUrl =`https://aapani-dukan-frontend-4444.vercel.app/CustomerDashboard?token=${token}`;
     res.redirect(redirectUrl);
   }
 );
