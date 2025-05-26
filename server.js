@@ -45,7 +45,9 @@ const upload = multer({ storage });
 app.get("/", (req, res) => {
   res.send("Server is live and working with Google Auth!");
 });
-
+app.get('/healthz', (req, res) => {
+  res.status(200).send('OK');
+});
 // ============ Seller Registration ============
 app.post('/api/register-seller', (req, res) => {
   const { name, shopName, mobile } = req.body;
