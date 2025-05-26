@@ -22,7 +22,7 @@ router.get('/auth/callback',
     }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
     // Redirect to frontend with token
-    const redirectUrl = `https://https://aapani-dukan-frontend-4444-hi5w3iba8-shiv-raj-gurjars-projects.vercel.app/CustomerDashboard?token=${token}`;
+    const redirectUrl = `https://https://aapani-dukan-frontend-4444.vercel.app/CustomerDashboard?token=${token}`;
     res.redirect(redirectUrl);
   }
 );
