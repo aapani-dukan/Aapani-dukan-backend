@@ -30,7 +30,7 @@ router.get(
     );
 
     // Redirect to /auth/callback with token
-    res.redirect(`/auth/callback?token=${token}`);
+    res.redirect(`/auth/callback?token=${jwtToken}`);
   }
 );
 
